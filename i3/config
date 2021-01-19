@@ -30,7 +30,7 @@ font pango:RobotoMono-VariableFont_whgt 9
 
 # NetworkManager is the most popular way to manage wireless networks on Linux,
 # and nm-applet is a desktop environment-independent system tray GUI for it.
-exec --no-startup-id nm-applet
+#exec --no-startup-id nm-applet
 
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
@@ -50,7 +50,7 @@ bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
 #bindsym $mod+d exec dmenu_run
-bindsym $mod+d exec rofi -show run 
+bindsym $mod+d exec rofi -show run
 
 #-config /home/username/.config/rofi
 
@@ -90,7 +90,7 @@ bindsym $mod+h split h
 bindsym $mod+v split v
 
 # enter fullscreen mode for the focused container
-bindsym $mod+f fullscreen toggle
+bindsym $mod+shift+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
 bindsym $mod+s layout stacking
@@ -209,9 +209,9 @@ bar {
 	}
 	font pango:Roboto Mono for Powerline 10
 	status_command /home/riccardo/.config/bumblebee-status/bumblebee-status \
-	-m title cpu network_traffic disk pasink brightness battery datetime\
+	-m title cpu disk nic pasink brightness battery datetime\
 	-t nord-powerline \
-	-p datetime.format="%a, %d/%m/%Y %H:%M:%S" disk.format="{used} ({percent:05.02f}%)" \
+	-p datetime.format="%a, %d/%m/%Y %H:%M:%S" disk.format="{used} ({percent:05.02f}%)" nic.format="{ssid} {ip}" \
 	brightness.interval=1s system.width=300
 }
 
@@ -240,6 +240,8 @@ bindsym XF86AudioPrev exec playerctl previous
 
 exec xautolock -time 5 -corners 000- -locker "/home/riccardo/scripts/lock.sh"
 
+exec_always /home/riccardo/scripts/batterycheck.sh
+
 exec_always feh --bg-scale /home/riccardo/Pictures/wallpaper.png
 
 for_window [class="Gnome-calculator"] floating enable
@@ -249,11 +251,12 @@ for_window [class="Gnome-calculator"] floating enable
 
 exec_always compton -f --fade-in-step=0.052 --fade-out-step=0.055 --config ~/.config/compton/compton.conf
 
-set $exitmode [S]hutdown | [R]eboot | [L]ogout
+set $exitmode [S]hutdown | [R]eboot | [L]ogout | Suspen[D]
 mode "$exitmode" {
 	bindsym s exec shutdown now
 	bindsym r exec shutdown -r now
 	bindsym l exec i3-msg exit
+	bindsym d exec systemctl suspend; mode "default"
 	bindsym Return mode "default"
 	bindsym Escape mode "default"
 }
@@ -268,3 +271,14 @@ hide_edge_borders both
 client.focused #555555 #555555 #ffffff #009688     #009688
 client.focused_inactive #555555 #555555 #ffffff #777777     #009688
 client.unfocused #555555 #555555 #ffffff #777777     #777777
+
+bindsym $mod+f exec firefox
+bindsym $mod+n exec /home/riccardo/scripts/networkapplt.sh
+bindsym $mod+c exec code
+bindsym $mod+Tab exec rofi -show window
+bindsym $mod+KP_Enter exec gnome-calculator
+bindsym $mod+t exec /home/riccardo/scripts/dateNtime.sh
+bindsym Print exec /home/riccardo/scripts/scrot.sh 
+bindsym Shift+Print exec gnome-screenshot -i
+
+exec_always /home/riccardo/scripts/tabletButtons.sh
